@@ -44,19 +44,49 @@
             <tbody>
             <tr v-for="(todo, index) in todos" :todo="todo" :key="todo">
                 <td>{{ index + 1 }}</td>
-                <td><input type="text" v-model="todo.title"></td>
-                <td><textarea type="text" v-model="todo.description" class="edit-text"></textarea></td>
-                <td><input type="date" v-model="todo.deadline"></td>
-                <td>
-                    <select class="form-control select-status" v-model="todo.status">
-                        <option>Open</option>
-                        <option>In progress</option>
-                        <option>Closed</option>
-                    </select>
-                </td>
-                <td @click="isEditing = !isEditing" v-if="!isEditing"><i class="fa fa-edit"></i></td>
-                <td @click="save" v-else-if="isEditing"><i class="fa fa-save"></i></td>
+                <td>{{ todo.title }}</td>
+                <td>{{ todo.description }}</td>
+                <td>{{ todo.deadline }}</td>
+                <td>{{ todo.status }}</td>
+                <td  @click="showModal(index)"><i class="fa fa-edit"></i></td>
                 <td><i class="fa fa-trash" @click="removeTodo(index)"></i></td>
+                <div class='modal fade' id='modal_edit' v-show="isEditing">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="container-fluid">
+                                <div class="modal-header">
+                                    <h5 class="modal-title">Edit ToDo</h5>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="form-group">
+                                        <label for="title">Title</label>
+                                        <input type="text" class="form-control" v-model="todos[index].title" id="title">
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="description">Description</label>
+                                        <textarea class="form-control" v-model="todos[index].description" id="description"></textarea>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="deadline">Deadline</label>
+                                        <input type="date" class="form-control" v-model="todos[index].deadline" id="deadline">
+                                    </div>
+                                    <div>
+                                        <label for="status">Status</label>
+                                        <select class="form-control select-status" v-model="todos[index].status">
+                                            <option>Open</option>
+                                            <option>In progress</option>
+                                            <option>Closed</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="modal-footer mt-4 justify-content-center">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                                    <button type="button" class="btn btn-primary" v-on:click="saveTodo(todo)">Confirm</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </tr>
             </tbody>
         </table>
@@ -65,9 +95,14 @@
 
 <script>
 export default {
+    props: ['todo'],
     data() {
         return {
             title: 'My ToDo List',
+            newTitle: '',
+            newDescription: '',
+            newDeadline: '',
+            newStatus: '',
             todos: [
                 { title: 'hieu1', description: 'hieu1', deadline: '2020-01-01', status: 'Open' },
                 { title: 'hieu2', description: 'hieu2', deadline: '2020-05-01', status: 'In progress' },
@@ -85,16 +120,21 @@ export default {
                 status: this.newStatus,
                 done: false
             });
+            this.newTitle = '';
+            this.newDescription = '';
+            this.newDeadline = '';
+            this.newStatus = '';
         },
         removeTodo(index) {
             this.todos.splice(index, 1);
         },
-        editToDo(index) {
+        editTodo(todo) {
+            this._beforeEditingCache = Object.assign({}, todo);
             this.isEditing = true;
         },
-        save() {
+        saveTodo(todo) {
             this.isEditing = false;
-    }
+        }
     }
 }
 </script>
