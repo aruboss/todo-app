@@ -1,6 +1,6 @@
 <template>
     <div id="app" class="p-3">
-        <h1> {{title}} </h1>
+        <h1> My Todo App </h1>
         <form @submit.prevent="addTodo">
             <label for="newTodo">Add New Todo</label>
             <div class="row">
@@ -48,67 +48,71 @@
                 <td>{{ todo.description }}</td>
                 <td>{{ todo.deadline }}</td>
                 <td>{{ todo.status }}</td>
-                <td  @click="showModal(index)"><i class="fa fa-edit"></i></td>
+                <td><i class="fa fa-edit" @click="editTodo(todo)"></i></td>
                 <td><i class="fa fa-trash" @click="removeTodo(index)"></i></td>
-                <div class='modal fade' id='modal_edit' v-show="isEditing">
-                    <div class="modal-dialog modal-lg" role="document">
-                        <div class="modal-content">
-                            <div class="container-fluid">
-                                <div class="modal-header">
-                                    <h5 class="modal-title">Edit ToDo</h5>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="form-group">
-                                        <label for="title">Title</label>
-                                        <input type="text" class="form-control" v-model="todos[index].title" id="title">
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="description">Description</label>
-                                        <textarea class="form-control" v-model="todos[index].description" id="description"></textarea>
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="deadline">Deadline</label>
-                                        <input type="date" class="form-control" v-model="todos[index].deadline" id="deadline">
-                                    </div>
-                                    <div>
-                                        <label for="status">Status</label>
-                                        <select class="form-control select-status" v-model="todos[index].status">
-                                            <option>Open</option>
-                                            <option>In progress</option>
-                                            <option>Closed</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="modal-footer mt-4 justify-content-center">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                                    <button type="button" class="btn btn-primary" v-on:click="saveTodo(todo)">Confirm</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
             </tr>
             </tbody>
         </table>
+        <div id="my-modal" class="modal fade">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                    <h5 class="modal-title">Edit</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                    </div>
+                    <div class="modal-body">
+                    <div class="form-group">
+                        <label for="title">Title</label>
+                        <input type="text" class="form-control" v-model="title" id="title">
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description</label>
+                        <textarea class="form-control" v-model="description" id="description"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="deadline">Deadline</label>
+                        <input type="date" class="form-control" v-model="deadline" id="deadline">
+                    </div>
+                    <div>
+                        <label for="status">Status</label>
+                        <select class="form-control select-status" v-model="status">
+                            <option>Open</option>
+                            <option>In progress</option>
+                            <option>Closed</option>
+                        </select>
+                    </div>
+
+                    </div>
+                    <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" @click="saveTodo()">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+    </div>
     </div>
 </template>
 
 <script>
+import ModalEdit from './components/ModalEdit';
 export default {
     props: ['todo'],
+    components: {
+        'modal-edit': ModalEdit,
+    },
     data() {
         return {
-            title: 'My ToDo List',
-            newTitle: '',
-            newDescription: '',
-            newDeadline: '',
-            newStatus: '',
+            title: '',
+            description: '',
+            deadline: '',
+            status: '',
             todos: [
                 { title: 'hieu1', description: 'hieu1', deadline: '2020-01-01', status: 'Open' },
                 { title: 'hieu2', description: 'hieu2', deadline: '2020-05-01', status: 'In progress' },
                 { title: 'hieu3', description: 'hieu3', deadline: '2020-01-19', status: 'Closed' },
-            ],
-            isEditing: false
+            ]
         }
     },
     methods: {
@@ -120,22 +124,21 @@ export default {
                 status: this.newStatus,
                 done: false
             });
-            this.newTitle = '';
-            this.newDescription = '';
-            this.newDeadline = '';
-            this.newStatus = '';
         },
         removeTodo(index) {
             this.todos.splice(index, 1);
         },
         editTodo(todo) {
-            this._beforeEditingCache = Object.assign({}, todo);
-            this.isEditing = true;
+        	this.title = todo.title;
+            this.description = todo.description;
+            this.deadline = todo.deadline;
+            this.status = todo.status;
+            $("#my-modal").modal('show');
         },
-        saveTodo(todo) {
-            this.isEditing = false;
+        saveTodo() {
+
         }
-    }
+    },
 }
 </script>
 
