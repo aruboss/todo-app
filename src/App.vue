@@ -20,6 +20,8 @@ export default {
                 { title: 'hieu1', description: 'hieu1', deadline: '2020-01-01', status: 'Open' },
                 { title: 'hieu2', description: 'hieu2', deadline: '2020-05-01', status: 'In progress' },
                 { title: 'hieu3', description: 'hieu3', deadline: '2020-01-19', status: 'Closed' },
+                { title: 'hieu4', description: 'hieu4', deadline: '2020-03-22', status: 'In progress' },
+                { title: 'hieu5', description: 'hieu5', deadline: '2020-10-14', status: 'Closed' },
             ]
         };
     },
